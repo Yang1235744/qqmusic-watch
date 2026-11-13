@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QQ音乐手表版 — Huawei Watch Fit 3</title>
+  <style>
+    :root {
+      --bg: #0d0d0d;
+      --surface: #1a1a1a;
+      --border: #2a2a2a;
+      --accent: #1db954;
+      --accent-dim: #1ed760;
+      --text: #f5f5f5;
+      --text-muted: #a0a0a0;
+      --code-bg: #111;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.6;
+    }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* Header */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      background: rgba(13,13,13,0.9);
+      backdrop-filter: blur(8px);
+      z-index: 10;
+    }
+    .logo { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 0.5rem; }
+    .logo span { color: var(--accent); }
+    nav { display: flex; gap: 1.5rem; }
+    nav a { color: var(--text-muted); font-size: 0.9rem; transition: color 0.2s; }
+    nav a:hover { color: var(--text); text-decoration: none; }
+
+    /* Hero */
+    .hero {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 5rem 2rem 3rem;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.3rem 0.9rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-bottom: 1.5rem;
+    }
+    .badge em { color: var(--accent); font-style: normal; }
+    h1 {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    h1 em { color: var(--accent); font-style: normal; }
+    .subtitle { color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto 2rem; }
+    .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.7rem 1.4rem;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    .btn:hover { transform: translateY(-1px); text-decoration: none; }
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+      box-shadow: 0 4px 20px rgba(29,185,84,0.3);
+    }
+    .btn-secondary {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* Screenshots mockup */
+    .phone-mockup {
+      max-width: 700px;
+      margin: 3rem auto 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+    .mock-bar {
+      background: #111;
+      padding: 0.5rem 1rem;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot:nth-child(1) { background: #ff5f57; }
+    .dot:nth-child(2) { background: #febc2e; }
+    .dot:nth-child(3) { background: #28c840; }
+    .mock-content {
+      padding: 2rem;
+      text-align: left;
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      min-height: 200px;
+      white-space: pre-wrap;
+    }
+    .mock-content .keyword { color: #ff7b72; }
+    .mock-content .string { color: #9ecbff; }
+    .mock-content .comment { color: #6a737d; }
+    .mock-content .fn { color: #d2a8ff; }
+    .mock-content .type { color: #79c0ff; }
+
+    /* Features */
+    section { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
+    h2 { font-size: 1.5rem; margin-bottom: 1.5rem; }
+    .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.3rem;
+    }
+    .feature-card h3 { font-size: 1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+    .feature-card p { font-size: 0.85rem; color: var(--text-muted); }
+    .check { color: var(--accent); }
+    .warn { color: #f0883e; }
+
+    /* Code block */
+    .code-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; overflow-x: auto; }
+    code { font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", Consolas, monospace; font-size: 0.85rem; color: var(--accent-dim); }
+    .copy-btn {
+      float: right;
+      background: var(--border);
+      border: none;
+      color: var(--text-muted);
+      padding: 0.3rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.75rem;
+    }
+    .copy-btn:hover { color: var(--text); }
+
+    /* Quick start */
+    .steps { counter-reset: step; list-style: none; display: grid; gap: 1rem; }
+    .steps li {
+      counter-increment: step;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1rem 1rem 1rem 3.5rem;
+      position: relative;
+    }
+    .steps li::before {
+      content: counter(step);
+      position: absolute;
+      left: 1rem;
+      top: 1rem;
+      width: 28px;
+      height: 28px;
+      background: var(--accent);
+      color: #000;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+    }
+    .steps li strong { display: block; margin-bottom: 0.2rem; }
+    .steps li small { color: var(--text-muted); font-size: 0.85rem; }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.8rem;
+    }
+    footer a { color: var(--accent); }
+
+    @media (max-width: 600px) {
+      header { padding: 0.8rem 1rem; }
+      .hero { padding: 3rem 1rem 2rem; }
+      nav { gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">🎵 <span>QQMusic</span>Watch</div>
+  <nav>
+    <a href="#features">功能</a>
+    <a href="#quickstart">快速开始</a>
+    <a href="https://github.com/Yang1235744/qqmusic-watch" target="_blank">GitHub</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <div class="badge">Open Source · HarmonyOS · ArkTS</div>
+  <h1>在华为 Watch Fit 3<br>上听<em> QQ 音乐</em></h1>
+  <p class="subtitle">
+    完全开源的 HarmonyOS 穿戴应用，支持在线搜索歌曲、在线播放。<br>
+    任何人均可 fork 源码，用自己的证书签名安装。
+  </p>
+  <div class="cta-group">
+    <a class="btn btn-primary" href="https://github.com/Yang1235744/qqmusic-watch">
+      ⭐ View on GitHub
+    </a>
+    <a class="btn btn-secondary" href="#quickstart">
+      📖 快速开始
+    </a>
+  </div>
+</div>
+
+<div class="phone-mockup">
+  <div class="mock-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+  <div class="mock-content"><span class="comment">// entry/src/main/ets/utils/QQMusicApi.ets</span>
+<span class="keyword">async function</span> <span class="fn">searchSong</span>(<span class="type">key</span>: <span class="type">string</span>): <span class="type">Promise</span>&lt;<span class="type">SongInfo</span>[]&gt; {
+  <span class="keyword">const</span> url = <span class="string">`https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&txt=${encodeURIComponent(key)}&spt=3&p=1&n=20&w=$`</span>
+  <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="fn">http.request</span>(url)
+  <span class="keyword">return</span> parseResponse(res.data)
+}</div>
+</div>
+
+<section id="features">
+  <h2>功能一览</h2>
+  <div class="features">
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 在线搜索</h3>
+      <p>按歌名 / 歌手 / 专辑搜索，调用 QQ 音乐公开 Web API。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 在线播放</h3>
+      <p>m4a 格式流媒体播放，依托 AVPlayer 硬件解码，续航友好。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 播放控制</h3>
+      <p>播放 / 暂停、进度拖动、停止，支持触摸滑动交互。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 深色 AMOLED</h3>
+      <p>纯黑背景 + 绿色点缀，适配 1.82″ 矩形 OLED 屏幕，省电。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="warn">⚠️</span> 无账号登录</h3>
+      <p>未接入 QQ 登录，无法同步个人歌单；仅供离线/匿名使用。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="warn">⚠️</span> 无后台保活</h3>
+      <p>锁屏后可能暂停，需配合 HarmonyOS 长时任务框架进一步优化。</p>
+    </div>
+  </div>
+</section>
+
+<section id="quickstart">
+  <h2>快速开始</h2>
+  <ol class="steps">
+    <li>
+      <strong>Fork 本仓库</strong>
+      <small>点击 GitHub 右上角 Fork，获得你自己的副本。</small>
+    </li>
+    <li>
+      <strong>申请开发者证书</strong>
+      <small>登录 <a href="https://developer.huawei.com/consumer/cn/agc/" target="_blank">AGC 控制台</a>，生成 CSR → 申请调试证书 → 下载 Profile（.p7b）和证书（.cer）。</small>
+    </li>
+    <li>
+      <strong>放入 sign/ 目录</strong>
+      <small>将 <code>.p12</code>、<code>.cer</code>、<code>.p7b</code> 复制到项目的 <code>sign/</code> 文件夹，修改密码。</small>
+    </li>
+    <li>
+      <strong>用 DevEco Studio 打开 &amp; 构建</strong>
+      <small>选择目标设备（Watch Fit 3 或模拟器），Build → Build Hap(s)，然后一键安装到手表。</small>
+    </li>
+  </ol>
+</section>
+
+<section>
+  <h2>项目结构</h2>
+  <div class="code-section">
+    <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.textContent)">复制</button>
+    <code>qqmusic-watch/
+├── AppScope/app.json5              # 包名：com.qqmusic.watch.fit3
+├── entry/src/main/ets/
+│   ├── entryability/EntryAbility.ets
+│   ├── pages/
+│   │   ├── Index.ets               # 首页（热门推荐）
+│   │   ├── Search.ets              # 搜索页
+│   │   └── Player.ets              # 播放器页
+│   ├── utils/
+│   │   ├── QQMusicApi.ets          # 搜索 & 播放 API
+│   │   └── AudioPlayer.ets         # AVPlayer 封装
+│   └── model/Song.ets              # 数据模型
+├── build.ps1                       # Windows 一键构建脚本
+├── .gitignore
+└── README.md</code>
+  </div>
+</section>
+
+<footer>
+  <p>本项目为学习研究用途，非腾讯官方产品。QQ 音乐版权归腾讯所有。</p>
+  <p style="margin-top:0.4rem">
+    <a href="https://github.com/Yang1235744/qqmusic-watch">GitHub</a> ·
+    <a href="https://github.com/Yang1235744/qqmusic-watch/blob/main/打包签名与上架指南.md">中文签名指南</a> ·
+    Apache-2.0 License
+  </p>
+</footer>
+
+</body>
+</html>

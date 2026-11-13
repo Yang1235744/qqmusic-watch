@@ -22,3 +22,7 @@ sign/*.jks
 # OS
 .DS_Store
 Thumbs.db
+
+# Temp / test files
+probe.txt
+*.tmp
