@@ -2,6 +2,7 @@ import { router } from '@kit.ArkUI';
 import { promptAction } from '@kit.ArkUI';
 import { QQMusicApi } from '../utils/QQMusicApi';
 import { AudioPlayer } from '../utils/AudioPlayer';
+import { FavoritesManager } from '../utils/FavoritesManager';
 import { Song } from '../model/Song';
 
 /**
@@ -14,7 +15,14 @@ struct SearchPage {
   @State songList: Song[] = [];
   @State isLoading: boolean = false;
   @State hasSearched: boolean = false;
+  @State favoriteStatusMap: Record<string, boolean> = {};
   private player: AudioPlayer = AudioPlayer.getInstance();
+  private favMgr: FavoritesManager = FavoritesManager.getInstance();
+
+  /** 初始化收藏状态 */
+  async aboutToAppear(): Promise<void> {
+    await this.favMgr.init();
+  }
 
   /** 执行搜索 */
   async doSearch(): Promise<void> {
@@ -28,6 +36,10 @@ struct SearchPage {
     try {
       const result = await QQMusicApi.search(this.keyword.trim(), 1, 30);
       this.songList = result.songList;
+      // 刷新收藏状态
+      for (const song of this.songList) {
+        this.favoriteStatusMap[song.songMid] = this.favMgr.isFavorite(song.songMid);
+      }
       if (this.songList.length === 0) {
         promptAction.showToast({ message: '未找到相关歌曲' });
       }
@@ -38,17 +50,38 @@ struct SearchPage {
     }
   }
 
-  /** 播放歌曲 */
+  /** 播放并加入队列 */
   async playSong(song: Song): Promise<void> {
     try {
       if (!song.playUrl) {
+        if (song.isVip) {
+          promptAction.showToast({ message: '该歌曲为VIP，暂无法播放' });
+          return;
+        }
         promptAction.showToast({ message: '正在获取播放地址...' });
         song.playUrl = await QQMusicApi.getPlayUrl(song.songMid);
+        // 后台异步获取歌词
+        QQMusicApi.getLyrics(song.songMid).then((lyrics) => {
+          song.lyricsText = lyrics;
+        }).catch(() => {});
       }
+      // 重建队列为当前搜索结果列表，从当前歌曲开始
+      this.player.playQueue(song);
       await this.player.play(song);
       router.pushUrl({ url: 'pages/Player' });
     } catch (e) {
       promptAction.showToast({ message: '播放失败：' + (e as Error).message });
+    }
+  }
+
+  /** 切换收藏 */
+  async toggleFavorite(song: Song): Promise<void> {
+    const isFav = await this.favMgr.toggleFavorite(song.songMid);
+    this.favoriteStatusMap[song.songMid] = isFav;
+    if (isFav) {
+      promptAction.showToast({ message: '已收藏' });
+    } else {
+      promptAction.showToast({ message: '已取消收藏' });
     }
   }
 
@@ -118,9 +151,29 @@ struct SearchPage {
                 .layoutWeight(1)
                 .alignItems(HorizontalAlign.Start)
 
+                // VIP标识
+                if (song.isVip) {
+                  Text('VIP')
+                    .fontSize(10)
+                    .fontColor('#FF9900')
+                    .backgroundColor('#332200')
+                    .borderRadius(4)
+                    .padding({ left: 4, right: 4, top: 2, bottom: 2 })
+                    .margin({ right: 6 })
+                }
+
+                // 收藏按钮
+                Image(this.favoriteStatusMap[song.songMid] ? $r('sys.media.ohos_ic_public_heart_filled') : $r('sys.media.ohos_ic_public_heart'))
+                  .width(24)
+                  .height(24)
+                  .fillColor(this.favoriteStatusMap[song.songMid] ? '#FF31C27C' : '#666666')
+                  .onClick(() => this.toggleFavorite(song))
+                  .margin({ right: 8 })
+
+                // 播放按钮
                 Image($r('sys.media.ohos_ic_public_play'))
-                  .width(26)
-                  .height(26)
+                  .width(24)
+                  .height(24)
                   .fillColor('#FF31C27C')
                   .onClick(() => this.playSong(song))
               }

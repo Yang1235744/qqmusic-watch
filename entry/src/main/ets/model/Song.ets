@@ -18,6 +18,12 @@ export class Song {
   duration: number;
   /** 播放地址 */
   playUrl: string = '';
+  /** 歌词URL */
+  lrcUrl: string = '';
+  /** 歌词文本 */
+  lyricsText: string = '';
+  /** 是否VIP歌曲 */
+  isVip: boolean = false;
 
   constructor(songId: number, songMid: string, songName: string, singerName: string,
     albumName: string, albumCoverUrl: string, duration: number) {

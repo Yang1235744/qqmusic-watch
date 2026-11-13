@@ -60,12 +60,28 @@ interface VkeyResponse {
 }
 
 /**
+ * 歌词接口返回 - 单条item
+ */
+interface LrcItem {
+  lrc: string;
+}
+
+/**
+ * 歌词接口返回结构
+ */
+interface LrcResponse {
+  code: number;
+  data: LrcItem;
+}
+
+/**
  * QQ音乐Web API封装
  * 说明：使用QQ音乐网页端公开接口，仅用于学习研究，版权归腾讯所有
  */
 export class QQMusicApi {
   private static readonly SEARCH_URL = 'https://c.y.qq.com/soso/fcgi-bin/client_search_cp';
   private static readonly VKEY_URL = 'https://c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg';
+  private static readonly LRC_URL = 'https://c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg';
   private static readonly PLAY_HOST = 'https://dl.stream.qqmusic.qq.com';
   private static readonly COVER_HOST = 'https://y.qq.com/music/photo_new';
 
@@ -104,8 +120,10 @@ export class QQMusicApi {
       const albumMid: string = item.albummid;
       const albumCoverUrl: string = albumMid ? `${QQMusicApi.COVER_HOST}/T002R300x300M000${albumMid}.jpg` : '';
       const duration: number = item.interval || 0;
+      // interval单位为秒；VIP歌曲interval字段可能为null或异常值，通过检查interval推断
+      const isVip: boolean = !songMid || item.interval === null || item.interval === undefined;
 
-      return new Song(songId, songMid, songName, singerName, albumName, albumCoverUrl, duration);
+      return new Song(songId, songMid, songName, singerName, albumName, albumCoverUrl, duration, '', '', isVip);
     });
 
     return new SearchResult(songList, total, page);
@@ -150,6 +168,25 @@ export class QQMusicApi {
       }
     }
     return result;
+  }
+
+  /**
+   * 获取歌词文本
+   * @param songMid 歌曲mid
+   */
+  static async getLyrics(songMid: string): Promise<string> {
+    const url = `${QQMusicApi.LRC_URL}?songmid=${songMid}&jsonpCallback=&format=json`;
+
+    const json = await QQMusicApi.httpGetJson(url) as LrcResponse;
+    const data = json.data;
+    const lrc = data.lrc || '';
+    if (!lrc) {
+      return '';
+    }
+    // 解析歌词文本，去掉时间标签
+    const lines = lrc.split('\n');
+    const cleanLines = lines.filter((line: string) => line.trim() && !line.includes('['));
+    return cleanLines.join('\n');
   }
 
   /**
