@@ -1,0 +1,11 @@
+{
+  "modelVersion": "26.0.0",
+  "name": "qqmusic-watch",
+  "version": "1.0.0",
+  "description": "QQ Music for Huawei Watch Fit 3",
+  "main": "",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {},
+  "devDependencies": {}
+}

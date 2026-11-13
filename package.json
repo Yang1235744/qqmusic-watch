@@ -1,0 +1,17 @@
+{
+  "name": "qqmusic-watch",
+  "version": "1.0.0",
+  "ohos": {
+    "org": "huawei",
+    "buildTool": "hvigor",
+    "directoryLevel": "project"
+  },
+  "description": "QQ Music for Huawei Watch Fit 3",
+  "repository": {},
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@ohos/hypium": "1.0.6",
+    "@ohos/hvigor": "6.26.1",
+    "@ohos/hvigor-ohos-plugin": "6.26.1"
+  }
+}

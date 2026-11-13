@@ -1,0 +1,24 @@
+# Build outputs
+.hvigor/
+entry/build/
+build/
+*.hap
+*.har
+
+# IDE
+.idea/
+*.iml
+*.xml
+
+# Local config (contains local SDK paths)
+local.properties
+
+# Sensitive: signing files must NOT be committed
+sign/*.p12
+sign/*.cer
+sign/*.p7b
+sign/*.jks
+
+# OS
+.DS_Store
+Thumbs.db
