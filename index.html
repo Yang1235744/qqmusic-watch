@@ -9,8 +9,9 @@
       --bg: #0d0d0d;
       --surface: #1a1a1a;
       --border: #2a2a2a;
-      --accent: #1db954;
-      --accent-dim: #1ed760;
+      --accent: #FF31C27C;
+      --accent-dim: #FF5A9C5A;
+      --qq-blue: #1E9FFF;
       --text: #f5f5f5;
       --text-muted: #a0a0a0;
       --code-bg: #111;
@@ -69,7 +70,7 @@
       margin-bottom: 1rem;
     }
     h1 em { color: var(--accent); font-style: normal; }
-    .subtitle { color: var(--text-muted); font-size: 1.15rem; max-width: 600px; margin: 0 auto 2rem; }
+    .subtitle { color: var(--text-muted); font-size: 1.15rem; max-width: 640px; margin: 0 auto 2rem; }
     .cta-group { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
     .btn {
       display: inline-flex;
@@ -85,7 +86,7 @@
     .btn-primary {
       background: var(--accent);
       color: #000;
-      box-shadow: 0 4px 20px rgba(29,185,84,0.3);
+      box-shadow: 0 4px 20px rgba(255,49,194,0.25);
     }
     .btn-secondary {
       background: var(--surface);
@@ -93,40 +94,20 @@
       color: var(--text);
     }
 
-    /* Screenshots mockup */
-    .phone-mockup {
-      max-width: 700px;
-      margin: 3rem auto 0;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      overflow: hidden;
-    }
-    .mock-bar {
-      background: #111;
-      padding: 0.5rem 1rem;
+    /* Feature highlights strip */
+    .highlights {
       display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-    .dot { width: 10px; height: 10px; border-radius: 50%; }
-    .dot:nth-child(1) { background: #ff5f57; }
-    .dot:nth-child(2) { background: #febc2e; }
-    .dot:nth-child(3) { background: #28c840; }
-    .mock-content {
-      padding: 2rem;
-      text-align: left;
-      font-family: monospace;
+      justify-content: center;
+      gap: 2rem;
+      flex-wrap: wrap;
+      margin-top: 2.5rem;
       font-size: 0.85rem;
       color: var(--text-muted);
-      min-height: 200px;
-      white-space: pre-wrap;
     }
-    .mock-content .keyword { color: #ff7b72; }
-    .mock-content .string { color: #9ecbff; }
-    .mock-content .comment { color: #6a737d; }
-    .mock-content .fn { color: #d2a8ff; }
-    .mock-content .type { color: #79c0ff; }
+    .highlights span { display: flex; align-items: center; gap: 0.3rem; }
+    .dot-green { width: 8px; height: 8px; border-radius: 50%; background: #31C27C; display: inline-block; }
+    .dot-blue { width: 8px; height: 8px; border-radius: 50%; background: #1E9FFF; display: inline-block; }
+    .dot-orange { width: 8px; height: 8px; border-radius: 50%; background: #FF9900; display: inline-block; }
 
     /* Features */
     section { max-width: 860px; margin: 0 auto; padding: 3rem 2rem; }
@@ -137,15 +118,28 @@
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 1.3rem;
+      transition: border-color 0.2s;
     }
+    .feature-card:hover { border-color: var(--accent); }
     .feature-card h3 { font-size: 1rem; margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
     .feature-card p { font-size: 0.85rem; color: var(--text-muted); }
-    .check { color: var(--accent); }
+    .check { color: #31C27C; }
+    .new-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 700;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-left: 6px;
+      vertical-align: middle;
+    }
     .warn { color: #f0883e; }
 
     /* Code block */
     .code-section { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; overflow-x: auto; }
-    code { font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", Consolas, monospace; font-size: 0.85rem; color: var(--accent-dim); }
+    code { font-family: "Cascadia Code", "Fira Code", "JetBrains Mono", Consolas, monospace; font-size: 0.82rem; color: var(--accent-dim); white-space: pre; }
     .copy-btn {
       float: right;
       background: var(--border);
@@ -201,6 +195,7 @@
       header { padding: 0.8rem 1rem; }
       .hero { padding: 3rem 1rem 2rem; }
       nav { gap: 1rem; }
+      .highlights { gap: 1rem; }
     }
   </style>
 </head>
@@ -219,8 +214,8 @@
   <div class="badge">Open Source · HarmonyOS · ArkTS</div>
   <h1>在华为 Watch Fit 3<br>上听<em> QQ 音乐</em></h1>
   <p class="subtitle">
-    完全开源的 HarmonyOS 穿戴应用，支持在线搜索歌曲、在线播放。<br>
-    任何人均可 fork 源码，用自己的证书签名安装。
+    完全开源的 HarmonyOS 穿戴应用。支持在线搜索、离线缓存、QQ 登录收藏同步、后台持续播放。<br>
+    任何人均可 fork 源码，用自己的证书签名安装到手表。
   </p>
   <div class="cta-group">
     <a class="btn btn-primary" href="https://github.com/Yang1235744/qqmusic-watch">
@@ -230,16 +225,12 @@
       📖 快速开始
     </a>
   </div>
-</div>
-
-<div class="phone-mockup">
-  <div class="mock-bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-  <div class="mock-content"><span class="comment">// entry/src/main/ets/utils/QQMusicApi.ets</span>
-<span class="keyword">async function</span> <span class="fn">searchSong</span>(<span class="type">key</span>: <span class="type">string</span>): <span class="type">Promise</span>&lt;<span class="type">SongInfo</span>[]&gt; {
-  <span class="keyword">const</span> url = <span class="string">`https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&txt=${encodeURIComponent(key)}&spt=3&p=1&n=20&w=$`</span>
-  <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="fn">http.request</span>(url)
-  <span class="keyword">return</span> parseResponse(res.data)
-}</div>
+  <div class="highlights">
+    <span><span class="dot-green"></span> 在线搜索 &amp; 播放</span>
+    <span><span class="dot-blue"></span> 离线缓存（本地听歌）</span>
+    <span><span class="dot-green"></span> 后台保活播放</span>
+    <span><span class="dot-orange"></span> QQ 登录框架</span>
+  </div>
 </div>
 
 <section id="features">
@@ -251,24 +242,57 @@
     </div>
     <div class="feature-card">
       <h3><span class="check">✅</span> 在线播放</h3>
-      <p>m4a 格式流媒体播放，依托 AVPlayer 硬件解码，续航友好。</p>
+      <p>m4a 格式流媒体播放，AVPlayer 硬件解码，续航友好。</p>
     </div>
     <div class="feature-card">
-      <h3><span class="check">✅</span> 播放控制</h3>
-      <p>播放 / 暂停、进度拖动、停止，支持触摸滑动交互。</p>
+      <h3><span class="check">✅</span> 播放队列</h3>
+      <p>点击搜索结果整组入队，播完自动切下一首；支持上一曲 / 下一曲。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 歌词显示</h3>
+      <p>播放器页展开歌词面板，跟随进度高亮滚动当前行。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 离线缓存 <span class="new-badge">NEW</span></h3>
+      <p>点击下载按钮将歌曲存至本地 <code>CachedData/</code>，无网络时优先播放本地版本。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> QQ 登录框架 <span class="new-badge">NEW</span></h3>
+      <p>OAuth 2.0 完整框架（扫码 / 密码 / Code 回调），token 持久化，开发者只需填入 AppID 即可接入。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 云端收藏 <span class="new-badge">NEW</span></h3>
+      <p>登录后开启"云端同步"开关，本地收藏自动上传至 QQ 账号（需接入云接口）。</p>
+    </div>
+    <div class="feature-card">
+      <h3><span class="check">✅</span> 后台播放 <span class="new-badge">NEW</span></h3>
+      <p>声明了 <code>backgroundModes: audioPlayback</code> + MEDIA_CONSOLE 权限，App 切后台仍可继续播放。</p>
     </div>
     <div class="feature-card">
       <h3><span class="check">✅</span> 深色 AMOLED</h3>
-      <p>纯黑背景 + 绿色点缀，适配 1.82″ 矩形 OLED 屏幕，省电。</p>
+      <p>纯黑背景 + 粉色点缀，适配 1.82″ 矩形 OLED 屏幕，省电。</p>
     </div>
-    <div class="feature-card">
-      <h3><span class="warn">⚠️</span> 无账号登录</h3>
-      <p>未接入 QQ 登录，无法同步个人歌单；仅供离线/匿名使用。</p>
-    </div>
-    <div class="feature-card">
-      <h3><span class="warn">⚠️</span> 无后台保活</h3>
-      <p>锁屏后可能暂停，需配合 HarmonyOS 长时任务框架进一步优化。</p>
-    </div>
+  </div>
+</section>
+
+<!-- New: How to integrate QQ login -->
+<section id="login-guide">
+  <h2>接入 QQ 登录（给后续开发者的说明）</h2>
+  <div class="code-section">
+    <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.textContent)">复制</button>
+    <code>// 1. 在 QQLoginManager.ets 中填入你的 QQ互联 AppID
+const QQ_CLIENT_ID = 'YOUR_APP_ID';           // https://open.qq.com 注册获取
+const QQ_REDIRECT_URI = 'https://your-domain.com/callback';
+
+// 2. 启动时调用初始化（EntryAbility.onCreate）
+await QQLoginManager.getInstance().init();
+
+// 3. 登录入口（首页右上角头像 → UserSettingsPage）
+await QQLoginManager.getInstance().loginWithQRCode(); // 二维码扫码
+await QQLoginManager.getInstance().loginWithCode(code); // 扫码后拿到 code 调用此方法
+
+// 4. 退出登录
+await QQLoginManager.getInstance().logout();</code>
   </div>
 </section>
 
@@ -299,19 +323,24 @@
   <div class="code-section">
     <button class="copy-btn" onclick="navigator.clipboard.writeText(this.nextElementSibling.textContent)">复制</button>
     <code>qqmusic-watch/
-├── AppScope/app.json5              # 包名：com.qqmusic.watch.fit3
+├── AppScope/app.json5                   # 包名：com.qqmusic.watch.fit3
 ├── entry/src/main/ets/
-│   ├── entryability/EntryAbility.ets
+│   ├── AppState.ets                     # 全局状态（登录态/当前歌曲/播放状态）
+│   ├── entryability/EntryAbility.ets    # 应用入口（音频会话+服务初始化）
 │   ├── pages/
-│   │   ├── Index.ets               # 首页（热门推荐）
-│   │   ├── Search.ets              # 搜索页
-│   │   └── Player.ets              # 播放器页
+│   │   ├── Index.ets                    # 首页（热门/离线/收藏 三 Tab）
+│   │   ├── Search.ets                   # 搜索页（含收藏/下载操作）
+│   │   ├── Player.ets                   # 播放器页（歌词/下载/控制）
+│   │   └── UserSettingsPage.ets         # 设置页（登录/缓存管理/云端同步）
 │   ├── utils/
-│   │   ├── QQMusicApi.ets          # 搜索 & 播放 API
-│   │   └── AudioPlayer.ets         # AVPlayer 封装
-│   └── model/Song.ets              # 数据模型
-├── build.ps1                       # Windows 一键构建脚本
-├── .gitignore
+│   │   ├── QQMusicApi.ets               # 搜索 & 播放 API
+│   │   ├── AudioPlayer.ets              # AVPlayer 封装（带队列）
+│   │   ├── LocalCacheManager.ets        # 本地离线缓存
+│   │   ├── QQLoginManager.ets           # QQ OAuth 登录框架
+│   │   ├── MediaNotification.ets        # 后台媒体通知
+│   │   └── FavoritesManager.ets         # 本地收藏持久化
+│   └── model/Song.ets                   # 歌曲数据模型
+├── build.ps1                            # Windows 一键构建脚本
 └── README.md</code>
   </div>
 </section>

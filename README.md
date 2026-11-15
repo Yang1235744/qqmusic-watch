@@ -1,6 +1,6 @@
 # QQ音乐手表版（华为 Watch Fit 3）
 
-HarmonyOS 穿戴应用，为华为 Watch Fit 3 提供 QQ 音乐在线搜索与播放功能。  
+HarmonyOS 穿戴应用，为华为 Watch Fit 3 提供 QQ 音乐的**搜索、播放、离线缓存、登录收藏**功能。  
 仅供学习研究使用，非官方产品，版权归腾讯所有。
 
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
@@ -9,24 +9,30 @@ HarmonyOS 穿戴应用，为华为 Watch Fit 3 提供 QQ 音乐在线搜索与�
 
 ---
 
-## 功能
+## 功能清单
 
-- ✅ QQ 音乐在线搜索（歌曲名 / 歌手 / 专辑）
-- ✅ 在线播放（m4a 格式，依托 QQ 公开 Web API）
-- ✅ 播放控制：播放/暂停、进度拖动、停止
-- ✅ 上一曲 / 下一曲切换（基于搜索结果列表作为播放队列）
-- ✅ 自动播放下一首（当前歌曲播完后自动切歌）
-- ✅ 歌词显示（点击播放器页右上角"歌词"按钮展开/收起）
-- ✅ 收藏功能（搜索列表中点击心形图标添加/取消收藏）
-- ✅ VIP 歌曲标识与友好提示
-- ✅ 适配 1.82 英寸矩形 AMOLED 屏幕
-- ✅ 深色主题（AMOLED 省电）
+### 已实现 ✅
 
-## 已知限制
+- **在线搜索** — 按歌名 / 歌手 / 专辑调用 QQ 公开 API
+- **在线播放** — m4a 流媒体，AVPlayer 硬件解码
+- **播放队列** — 搜索结果整组入队，播完自动切下一首；上一曲 / 下一曲按钮
+- **歌词显示** — 播放器页右上角"歌词"按钮展开滚动面板，高亮当前行
+- **离线缓存** — 点击下载按钮将歌曲存至设备本地 `CachedData/`，无网络时优先播本地版
+- **QQ 登录框架** — OAuth 2.0 完整桩代码（扫码 / 密码 / Code 回调），token 持久化存储
+- **云端收藏开关** — 登录后开启「云端同步」后收藏数据自动上传（需接入云接口）
+- **后台持续播放** — 声明 `backgroundModes: audioPlayback` + MEDIA_CONSOLE 权限，App 切后台继续播
+- **深色 AMOLED 主题** — 纯黑背景 + 粉色点缀，适配 1.82″ OLED 屏幕省电
+- **VIP 歌曲标识** — 带 VIP 标签的列表项，点击友好提示，不支持下载
 
-- ❌ 不支持 QQ 账号登录（需官方 OAuth 授权，本项目未接入）
-- ❌ 无本地持久化收藏（受设备存储空间限制，仅运行时内存维护）
-- ❌ 无后台保活（需配合长时任务框架）
+### 待后续开发者完成 🔲
+
+| 功能 | 状态文件 | TODO 说明 |
+|------|----------|-----------|
+| QQ 真实登录 | `QQLoginManager.ets` | 填入 AppID → 替换占位 API 为 harmony-qq-sdk 或 WebView |
+| 云端收藏同步 | `FavoritesManager.ets` | 接入 QQ 开放平台云收藏接口 |
+| 系统媒体通知 | `MediaNotification.ets` | 调用 `media.getNotificationManager()` 推送真实通知 |
+| 断点续传下载 | `LocalCacheManager.ets` | 接入 `DownloadService` 系统级下载服务 |
+| 稳定后台保活 | `EntryAbility.ets` | HarmonyOS 4.1+ 申请 `AUTO_BACKGROUND_RUNNING` 权限 |
 
 ---
 
@@ -40,17 +46,12 @@ HarmonyOS 穿戴应用，为华为 Watch Fit 3 提供 QQ 音乐在线搜索与�
 
 ### 构建步骤
 
-```bash
-# 1. 用 DevEco Studio 打开本项目根目录
-# 2. 等待项目同步完成（自动下载 ohpm 依赖）
-# 3. Build -> Build Hap(s) -> Build Hap(s)
-```
-
-或使用命令行：
-
 ```powershell
+# 命令行一键构建
 .\hvigorw.bat assembleHap --mode module -p product=default --no-daemon
 ```
+
+或在 DevEco Studio：**Build → Build Hap(s) → Build Hap(s)**
 
 HAP 输出路径：`entry/build/default/outputs/default/entry-default-unsigned.hap`
 
@@ -65,23 +66,45 @@ HAP 输出路径：`entry/build/default/outputs/default/entry-default-unsigned.h
 
 ```
 qqmusic-watch/
-├── AppScope/                   # 全局配置（包名、版本）
-│   └── app.json5
-├── entry/                      # 主模块
-│   ├── src/main/ets/
-│   │   ├── entryability/       # 入口 Ability
-│   │   ├── pages/              # UI 页面
-│   │   │   ├── Index.ets       # 首页（热门推荐）
-│   │   │   ├── Search.ets      # 搜索页
-│   │   │   └── Player.ets      # 播放器页
-│   │   ├── model/              # 数据模型
-│   │   └── utils/              # 工具类
-│   │       ├── QQMusicApi.ets  # QQ音乐 Web API 封装
-│   │       └── AudioPlayer.ets # AVPlayer 音频播放
-│   └── src/main/module.json5   # 模块配置（权限、设备类型）
-├── sign/                       # 签名文件目录（请自行填入）
-├── build.ps1                   # Windows 一键构建脚本
-└── 打包签名与上架指南.md        # 完整构建 & 上架腕连社区教程
+├── AppScope/app.json5                   # 包名：com.qqmusic.watch.fit3
+├── index.html                           # GitHub Pages 官网落地页
+├── entry/src/main/ets/
+│   ├── AppState.ets                     # 全局状态（登录态/当前歌曲/播放状态）
+│   ├── entryability/EntryAbility.ets    # 应用入口（音频会话 + 服务初始化）
+│   ├── pages/
+│   │   ├── Index.ets                    # 首页（热门 / 离线 / 收藏 三 Tab）
+│   │   ├── Search.ets                   # 搜索页（含收藏/下载操作按钮）
+│   │   ├── Player.ets                   # 播放器（歌词 / 离线下载 / 控制）
+│   │   └── UserSettingsPage.ets         # 设置页（登录 / 缓存管理 / 云端同步）
+│   ├── utils/
+│   │   ├── QQMusicApi.ets               # 搜索 & 播放地址 API
+│   │   ├── AudioPlayer.ets              # AVPlayer 封装（含播放队列）
+│   │   ├── LocalCacheManager.ets        # 离线缓存读写
+│   │   ├── QQLoginManager.ets           # QQ OAuth 登录框架
+│   │   ├── MediaNotification.ets        # 后台媒体通知
+│   │   └── FavoritesManager.ets         # 本地收藏持久化
+│   └── model/Song.ets                   # 歌曲数据模型
+├── sign/                                # 签名文件目录（请自行填入 .p12/.cer/.p7b）
+├── build.ps1                            # Windows 一键构建脚本
+└── README.md
+```
+
+---
+
+## 接入 QQ 登录（给开发者的指引）
+
+`QQLoginManager.ets` 中已预留完整的 OAuth 2.0 流程，只需做三步即可跑通：
+
+```typescript
+// 1. 在 QQLoginManager.ets 顶部填入你的 AppID
+const QQ_CLIENT_ID = 'YOUR_APP_ID';           // https://open.qq.com 注册获取
+const QQ_REDIRECT_URI = 'https://your-domain.com/callback';
+
+// 2. 启动时由 Ability 调用 init() 恢复上次登录态
+await QQLoginManager.getInstance().init();
+
+// 3. 实现 loginWithQRCode() / loginWithCode(code) 中的真实 API 调用
+//    参考文档：https://wiki.connect.qq.com/%e5%bc%80%e5%8f%91%e6%94%bb%e7%95%a5_pc%e7%ab%af%e6%8e%88%e6%9d%83%e7%8a%b6%e6%80%81
 ```
 
 ---
@@ -94,6 +117,7 @@ qqmusic-watch/
 |------|------|
 | `c.y.qq.com/soso/fcgi-bin/client_search_cp` | 歌曲搜索 |
 | `c.y.qq.com/base/fcgi-bin/fcg_music_express_mobile3.fcg` | 获取播放地址（vkey） |
+| `c.y.qq.com/lyric/fcgi-bin/fcg_query_lyric_new.fcg` | 获取歌词文本 |
 
 > 仅供学习与个人研究，请勿用于商业用途。
 
