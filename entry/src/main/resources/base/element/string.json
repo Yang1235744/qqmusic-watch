@@ -4,6 +4,9 @@
     { "name": "EntryAbility_desc", "value": "QQ音乐手表版" },
     { "name": "EntryAbility_label", "value": "QQ音乐" },
     { "name": "internet_permission_reason", "value": "用于在线搜索和播放QQ音乐" },
-    { "name": "background_permission_reason", "value": "用于后台持续播放音乐" }
+    { "name": "background_permission_reason", "value": "用于后台持续播放音乐" },
+    { "name": "media_console_reason", "value": "用于在通知栏显示播放控制" },
+    { "name": "storage_write_reason", "value": "用于缓存离线歌曲到本地" },
+    { "name": "storage_read_reason", "value": "用于读取本地缓存歌曲" }
   ]
 }
